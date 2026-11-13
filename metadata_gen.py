@@ -181,16 +181,17 @@ def generate_metadata(config_path: Path) -> List[Dict]:
     cfg = load_config(config_path)
     sources = collect_files(cfg["sources"])
     inc_dirs = cfg.get("include_dirs", [])
-    output = Path(cfg["output"])
+    output_dir = Path(cfg["output"])
     index, clang_args = build_index(inc_dirs)
 
     all_meta = parse_all(index, clang_args, sources)
 
     json_out = [asdict(m) for m in all_meta]
-    output.parent.mkdir(parents=True, exist_ok=True)
-    with output.open("w") as f:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    metadata_path = output_dir / "enum_metadata.json"
+    with metadata_path.open("w") as f:
         json.dump(json_out, f, indent=2)
-    logging.info(f"Wrote metadata for {len(all_meta)} enums to {output}")
+    logging.info(f"Wrote metadata for {len(all_meta)} enums to {metadata_path}")
     return json_out
 
 

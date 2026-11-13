@@ -43,7 +43,7 @@ def emit_makeIterable(enum):
     return f"template<>\nconstexpr std::array<{qname}, {count}> makeIterable<{qname}> = {{ {values} }};"
 
 
-def generate_header(enums):
+def generate_header(enums, namespace_name="EnumCrafter"):
     includes = sorted(set(sanitize_include_path(e["file"]) for e in enums))
     include_block = "\n".join(f'#include "{path}"' for path in includes)
     autogen_comment = """/*
@@ -66,7 +66,7 @@ def generate_header(enums):
 #include <string_view>
 #include <optional>
 
-namespace EnumCrafter {{
+namespace {namespace_name} {{
 template<typename EnumType>
 constexpr std::optional<EnumType> parse(std::string_view);
 
@@ -88,12 +88,12 @@ constexpr std::array<EnumType, 0> makeIterable = {{}};
             continue
         header += "\n" + emit_makeIterable(enum) + "\n"
 
-    header += "\n} // namespace EnumCrafter\n"
+    header += f"\n}} // namespace {namespace_name}\n"
     return header
 
 
-def generate_code(enums, output_path: Path) -> None:
-    header_code = generate_header(enums)
+def generate_code(enums, output_path: Path, namespace_name="EnumCrafter") -> None:
+    header_code = generate_header(enums, namespace_name)
     with output_path.open("w") as out:
         out.write(header_code)
 
@@ -106,7 +106,8 @@ def run_codegen(config_file: Path) -> None:
 
     generate_code(
         generate_metadata(config_file),
-        Path(config["output"]).parent / "EnumCrafter.hpp",
+        Path(config["output"]) / "EnumCrafter.hpp",
+        config.get("namespace", "EnumCrafter"),
     )
 
 

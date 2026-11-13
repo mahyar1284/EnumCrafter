@@ -17,9 +17,11 @@ Copy `config.example.json` into the consuming project and update:
 
 - `sources`: C++ files or directories to scan.
 - `include_dirs`: additional include directories for libclang.
-- `output`: path for the generated metadata JSON.
+- `output`: directory for generated files. The tool writes `enum_metadata.json`
+  and `EnumCrafter.hpp` there.
+- `namespace`: C++ namespace for the generated functions (defaults to
+  `EnumCrafter`).
 
-The generated `EnumCrafter.hpp` is written beside the metadata JSON.
 Relative paths are interpreted from the current working directory, so run the
 tool from the consuming project root or pass an appropriate config path.
 
