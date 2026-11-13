@@ -27,7 +27,7 @@ The generated header does not depend on Python or Clang at runtime.
 - Generates enum-to-string conversion functions.
 - Generates string-to-enum parsing functions.
 - Generates iterable arrays containing all enumerators.
-- Supports scoped enumerations (`enum class`).
+- Supports ONLY scoped enumerations (`enum class`).
 - Handles enums declared globally, inside namespaces, and inside classes or structs.
 - Extracts enum names, qualified names, source locations, and integer values.
 - Exports extracted metadata as JSON.
